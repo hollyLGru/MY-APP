@@ -1,6 +1,7 @@
 'use client'
 
 export default function ImageContainer(image) {
-  const url = image.image
+  console.log(image)
+  const url = image.image ?? image
   return <img className="w-auto" src={url} alt="house" />
 }
