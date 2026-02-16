@@ -155,12 +155,7 @@ export default function ListingsMap({ listings = [] } = {}) {
   return (
     <div className="md:mx-4">
       <div id="mapWrapper">
-        <div
-          id="map"
-          className="relative w-full"
-          ref={mapContainerRef}
-          style={{ height: '700px' }}
-        />
+        <div id="map" className="w-screen h-[80vh]" ref={mapContainerRef} />
       </div>
     </div>
   )
