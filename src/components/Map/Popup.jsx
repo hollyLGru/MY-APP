@@ -4,7 +4,7 @@ export default function PopUp(listing) {
   const house = listing.listing
   return (
     <div>
-      <ImageContainer image={house.images[0]} />
+      <ImageContainer house={house} />
       <h1>${house.price}</h1>
       <h2>
         {house.beds} beds | {house.baths} baths | {house.sqft} sqft home

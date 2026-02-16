@@ -109,4 +109,25 @@ export const listings = [
       'https://images.unsplash.com/photo-1600607688171-df9d8a6c2d1c',
     ],
   },
+  {
+    id: '3090 Rocky Rd',
+    address: '3090 Rocky Rd',
+    city: 'Kamas',
+    state: 'UT',
+    zip: '84098',
+    lat: 40.68953,
+    lon: -111.256885,
+    price: 5900000,
+    beds: 5,
+    baths: 4,
+    sqft: 4705,
+    acres: '316',
+    description:
+      "Set across 316 acres in Summit County's Elk Hills, 3090 N Rocky Road offers a rare opportunity to own a private mountain estate with unobstructed views, overlooking the Kamas Valley and stretching across the Wasatch Mountain Range, including Deer Valley and Mount Timpanogos. Elevated above the valley floor and bordered by thousands of acres of National Forest, the property delivers a sought-after combination of dramatic scenery, privacy, and scale in one of Utah's most desirable rural mountain settings.",
+    features: [
+      'Abundant wildlife',
+      'Unobstructed views',
+      'Flexible gathering spaces',
+    ],
+  },
 ]
