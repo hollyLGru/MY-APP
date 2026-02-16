@@ -62,8 +62,68 @@ export default function Map({ listings }) {
   }, [listings])
 
   return (
-    <div className="w-full">
-      <div ref={mapContainerRef} className="h-125 w-full rounded-2xl" />
+    <div className="md:mx-4">
+      {/* <MapHeader
+        substationCoordinates={substationCoordinates}
+        client={clientData}
+        substations={clientSubstations}
+        feeders={feedersBySubstation}
+        selectedFeeder={selectedFeeder}
+        setSelectedSubstation={setSelectedSubstation}
+        setSelectedFeeder={setSelectedFeeder}
+        setFeeders={setFeedersBySubstation}
+        map={map.current}
+        setSelectedStrand={setSelectedStrand}
+        selectedStrand={selectedStrand}
+        removeTrace={removeTrace}
+        selectedSubstation={selectedSubstation}
+        baseUrl={baseUrl}
+        feederGridError={feederGridError}
+        strandError={strandError}
+        subscribers={subscribers}
+      /> */}
+
+      <div id="mapWrapper">
+        <div
+          id="map"
+          className="relative w-full"
+          ref={mapContainerRef}
+          style={{ height: '700px' }}
+        >
+          {/* <div className={`absolute right-6 top-6 z-10 `}>
+            <div className={`${!showToggleBox ? `hidden` : ''}`}>
+              <ToggleBox
+                setToggleOfflineSubscribers={setToggleOfflineSubscribers}
+                setToggleOnlineSubscribers={setToggleOnlineSubscribers}
+                toggleOfflineSubscribers={toggleOfflineSubscribers}
+                toggleOnlineSubscribers={toggleOnlineSubscribers}
+                subscribers={subscribers}
+                currentMapBounds={currentMapBounds}
+                currentZoom={currentZoom}
+                client={clientData.id}
+                map={map}
+                baseUrl={baseUrl}
+                lightStyle={lightStyle}
+                satelliteStyle={satelliteStyle}
+                setStyleLoaded={setStyleLoaded}
+                theMap={map.current}
+                styleLoaded={styleLoaded}
+                splicePointTypes={splicePointTypes}
+                substations={clientSubstations}
+                setShowToggleBox={setShowToggleBox}
+              />
+            </div>
+            <button
+              className={`rounded-sm bg-gray-50 p-1 shadow ${
+                showToggleBox ? `hidden` : ''
+              } `}
+              onClick={() => setShowToggleBox(true)}
+            >
+              <List size={28} color={'#737373'} />
+            </button>
+          </div> */}
+        </div>
+      </div>
     </div>
   )
 }
