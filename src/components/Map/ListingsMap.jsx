@@ -116,6 +116,25 @@ export default function Map({ listings = [] } = {}) {
         })
       }
 
+      // hover ring (feature-state hover)
+      if (!map.getLayer(HOVER_LAYER)) {
+        map.addLayer({
+          id: HOVER_LAYER,
+          type: 'circle',
+          source: SOURCE_ID,
+          paint: {
+            'circle-radius': 12,
+            'circle-color': '#2563eb',
+            'circle-opacity': [
+              'case',
+              ['boolean', ['feature-state', 'hover'], false],
+              0.25,
+              0,
+            ],
+          },
+        })
+      }
+
       // selected ring (filter by listingId)
       if (!map.getLayer(SELECTED_LAYER)) {
         map.addLayer({
@@ -184,7 +203,7 @@ export default function Map({ listings = [] } = {}) {
         hoveredIdRef.current = null
       })
 
-      // click behavior: select + pop - up
+      // click behavior: select + zoom + popup
       map.on('click', DOT_LAYER, (e) => {
         const feature = e.features && e.features[0]
         if (!feature) return
