@@ -1,7 +1,8 @@
 'use client'
 import { useState, useEffect, useRef, useMemo } from 'react'
 import { listings } from '@/data/listings'
-import ImageContainer from '@/components/ImageContainer'
+// import ImageContainer from '@/components/ImageContainer'
+import Map from '@/components/Map/Map'
 
 export default function Test() {
   const [term, setTerm] = useState('World')
@@ -12,7 +13,8 @@ export default function Test() {
       <div className="text-5xl font-bold text-pink-500">
         Tailwind is alive 💅
       </div>
-      <ImageContainer image={listings[0].images[0]} />
+      {/* <ImageContainer image={listings[0].images[0]} /> */}
+      <Map listing={listings[0]} />
     </div>
   )
 }
