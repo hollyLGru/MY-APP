@@ -13,8 +13,7 @@ export default function Map({ listing }) {
     if (!listing) return
     if (!mapContainerRef.current) return
     if (mapRef.current) return // prevent re-init on re-render
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoiaGxncnVkb3ZpY2giLCJhIjoiY21scGk0eXBmMWdneTNrb2YydW45bjJrcyJ9.5u2EX2h28HrX57iv_UEe-w'
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
     // Mapbox expects [lng, lat]
     const center = [listing.lon, listing.lat]
