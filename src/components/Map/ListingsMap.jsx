@@ -6,7 +6,7 @@ import { createRoot } from 'react-dom/client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import PopUp from '@/components/Map/Popup'
 
-export default function ListingsMap({ listings = [] } = {}) {
+export default function Map({ listings = [] } = {}) {
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
 
@@ -14,30 +14,55 @@ export default function ListingsMap({ listings = [] } = {}) {
   const popupRef = useRef(null)
   const popupRootRef = useRef(null)
 
-  // built-in Map for id -> listing lookup
-  const listingByIdRef = useRef(new Map())
+  // IMPORTANT: avoid name collision with this component being named Map()
+  const listingByIdRef = useRef(new globalThis.Map())
+
+  // state refs for hover/selection
+  const hoveredIdRef = useRef(null)
+  const selectedIdRef = useRef(null)
+
+  // if listings arrive before map/source exists
+  const pendingFcRef = useRef({ type: 'FeatureCollection', features: [] })
 
   const SOURCE_ID = 'listings'
-  const LAYER_ID = 'listings-houses'
+  const DOT_LAYER = 'listings-dot'
+  const HOVER_LAYER = 'listings-hover'
+  const SELECTED_LAYER = 'listings-selected'
+  const PRICE_LAYER = 'listings-price'
 
   const buildListingsGeoJSON = (arr) => {
-    const byId = new Map()
+    const byId = new globalThis.Map()
 
     const features = (arr || [])
       .filter((l) => Number.isFinite(l.lon) && Number.isFinite(l.lat))
       .map((l) => {
         const listingId = l.id ?? l.listing_id ?? l.slug ?? `${l.lon},${l.lat}`
+
         byId.set(String(listingId), l)
 
         return {
           type: 'Feature',
-          geometry: { type: 'Point', coordinates: [l.lon, l.lat] },
-          properties: { listingId: String(listingId) },
+          id: String(listingId), // ✅ required for feature-state hover
+          geometry: {
+            type: 'Point',
+            coordinates: [l.lon, l.lat],
+          },
+          properties: {
+            listingId: String(listingId),
+            priceLabel: l.price ? `$${Number(l.price).toLocaleString()}` : '',
+          },
         }
       })
 
     listingByIdRef.current = byId
     return { type: 'FeatureCollection', features }
+  }
+
+  const fitToFeatures = (map, fc) => {
+    if (!fc?.features?.length) return
+    const bounds = new mapboxgl.LngLatBounds()
+    fc.features.forEach((f) => bounds.extend(f.geometry.coordinates))
+    map.fitBounds(bounds, { padding: 60, maxZoom: 14 })
   }
 
   // init map once
@@ -56,7 +81,7 @@ export default function ListingsMap({ listings = [] } = {}) {
 
     mapRef.current = map
 
-    // shared popup mount
+    // shared popup mount point
     const popupEl = document.createElement('div')
     popupRootRef.current = createRoot(popupEl)
     popupRef.current = new mapboxgl.Popup({
@@ -66,97 +91,163 @@ export default function ListingsMap({ listings = [] } = {}) {
       maxWidth: '320px',
     }).setDOMContent(popupEl)
 
-    const onLoad = async () => {
-      // source + layer
+    const onLoad = () => {
+      // source
       if (!map.getSource(SOURCE_ID)) {
         map.addSource(SOURCE_ID, {
           type: 'geojson',
-          data: { type: 'FeatureCollection', features: [] },
+          data: pendingFcRef.current,
         })
       }
 
-      if (!map.getLayer(LAYER_ID)) {
+      // base dot
+      if (!map.getLayer(DOT_LAYER)) {
         map.addLayer({
-          id: LAYER_ID,
+          id: DOT_LAYER,
           type: 'circle',
           source: SOURCE_ID,
           paint: {
             'circle-radius': 7,
+            'circle-color': '#2563eb',
             'circle-stroke-width': 2,
+            'circle-stroke-color': '#ffffff',
             'circle-opacity': 0.9,
           },
         })
+      }
 
-        map.on('click', LAYER_ID, (e) => {
-          const feature = e.features && e.features[0]
-          if (!feature) return
-
-          const id = feature.properties?.listingId
-          const listing = listingByIdRef.current.get(String(id))
-          if (!listing) return
-
-          popupRootRef.current.render(<PopUp listing={listing} />)
-          popupRef.current.setLngLat(e.lngLat).addTo(map)
-        })
-
-        map.on('mouseenter', LAYER_ID, () => {
-          map.getCanvas().style.cursor = 'pointer'
-        })
-        map.on('mouseleave', LAYER_ID, () => {
-          map.getCanvas().style.cursor = ''
+      // selected ring (filter by listingId)
+      if (!map.getLayer(SELECTED_LAYER)) {
+        map.addLayer({
+          id: SELECTED_LAYER,
+          type: 'circle',
+          source: SOURCE_ID,
+          paint: {
+            'circle-radius': 14,
+            'circle-color': '#2563eb',
+            'circle-opacity': 0.35,
+          },
+          filter: ['==', ['get', 'listingId'], ''], // none selected initially
         })
       }
 
-      // initial setData + fit
-      const fc = buildListingsGeoJSON(listings)
+      // optional: price label
+      if (!map.getLayer(PRICE_LAYER)) {
+        map.addLayer({
+          id: PRICE_LAYER,
+          type: 'symbol',
+          source: SOURCE_ID,
+          layout: {
+            'text-field': ['get', 'priceLabel'],
+            'text-size': 12,
+            'text-allow-overlap': true,
+            'text-offset': [0, -1.25],
+          },
+          paint: {
+            'text-color': '#111827',
+            'text-halo-color': '#ffffff',
+            'text-halo-width': 1,
+          },
+        })
+      }
+
+      // hover behavior
+      map.on('mousemove', DOT_LAYER, (e) => {
+        map.getCanvas().style.cursor = 'pointer'
+
+        const f = e.features && e.features[0]
+        if (!f) return
+
+        // clear previous hover
+        if (hoveredIdRef.current !== null) {
+          map.setFeatureState(
+            { source: SOURCE_ID, id: hoveredIdRef.current },
+            { hover: false }
+          )
+        }
+
+        hoveredIdRef.current = f.id ?? f.properties?.listingId
+        map.setFeatureState(
+          { source: SOURCE_ID, id: hoveredIdRef.current },
+          { hover: true }
+        )
+      })
+
+      map.on('mouseleave', DOT_LAYER, () => {
+        map.getCanvas().style.cursor = ''
+        if (hoveredIdRef.current !== null) {
+          map.setFeatureState(
+            { source: SOURCE_ID, id: hoveredIdRef.current },
+            { hover: false }
+          )
+        }
+        hoveredIdRef.current = null
+      })
+
+      // click behavior: select + pop - up
+      map.on('click', DOT_LAYER, (e) => {
+        const feature = e.features && e.features[0]
+        if (!feature) return
+
+        const id = feature.properties?.listingId
+        const listing = listingByIdRef.current.get(String(id))
+        if (!listing) return
+
+        // highlight selection
+        selectedIdRef.current = String(id)
+        map.setFilter(SELECTED_LAYER, [
+          '==',
+          ['get', 'listingId'],
+          selectedIdRef.current,
+        ])
+
+        // popup
+        popupRootRef.current.render(<PopUp listing={listing} />)
+        popupRef.current.setLngLat(e.lngLat).addTo(map)
+      })
+
+      // clear selection when popup closes
+      popupRef.current.on('close', () => {
+        selectedIdRef.current = null
+        if (map.getLayer(SELECTED_LAYER)) {
+          map.setFilter(SELECTED_LAYER, ['==', ['get', 'listingId'], ''])
+        }
+      })
+
+      // ensure we render whatever listings we already have
       const src = map.getSource(SOURCE_ID)
-      if (src) src.setData(fc)
-
-      if (fc.features.length) {
-        const bounds = new mapboxgl.LngLatBounds()
-        fc.features.forEach((f) => bounds.extend(f.geometry.coordinates))
-        map.fitBounds(bounds, { padding: 60, maxZoom: 14 })
-      }
+      if (src) src.setData(pendingFcRef.current)
+      fitToFeatures(map, pendingFcRef.current)
     }
 
     map.on('load', onLoad)
 
     return () => {
-      map.off('load', onLoad)
-
       try {
         popupRootRef.current?.unmount?.()
       } catch {}
       popupRef.current?.remove()
 
+      map.off('load', onLoad)
       map.remove()
       mapRef.current = null
     }
-  }, []) // init once
+  }, [])
 
-  // update source when listings change
+  // update source data when listings change
   useEffect(() => {
+    const fc = buildListingsGeoJSON(listings)
+    pendingFcRef.current = fc
+
     const map = mapRef.current
     if (!map) return
 
     const src = map.getSource(SOURCE_ID)
-    if (!src) return
-
-    const fc = buildListingsGeoJSON(listings)
-    src.setData(fc)
-
-    if (fc.features.length) {
-      const bounds = new mapboxgl.LngLatBounds()
-      fc.features.forEach((f) => bounds.extend(f.geometry.coordinates))
-      map.fitBounds(bounds, { padding: 60, maxZoom: 14 })
+    if (src) {
+      src.setData(fc)
+      fitToFeatures(map, fc)
     }
   }, [listings])
 
-  return (
-    <div className="md:mx-4">
-      <div id="mapWrapper">
-        <div id="map" className="w-screen h-[80vh]" ref={mapContainerRef} />
-      </div>
-    </div>
-  )
+  return <div ref={mapContainerRef} className="w-screen h-[80vh]" />
 }
