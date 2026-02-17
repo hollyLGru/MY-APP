@@ -1,6 +1,6 @@
 export const listings = [
   {
-    id: 'summit-001',
+    id: '7447 Royal St',
     address: '7447 Royal St',
     city: 'Park City',
     state: 'UT',
@@ -15,11 +15,7 @@ export const listings = [
     description:
       'Beautiful mountain retreat steps from historic Main Street. Vaulted ceilings, updated kitchen, and panoramic ski resort views.',
     features: ['Mountain View', 'Fireplace', 'Garage', 'Walk to lifts'],
-    images: [
-      'https://images.unsplash.com/photo-1600585154340-be6161a56a0c',
-      'https://images.unsplash.com/photo-1572120360610-d971b9d7767c',
-      'https://images.unsplash.com/photo-1564013799919-ab600027ffc6',
-    ],
+    acres: '0.25',
   },
   {
     id: '1200 Frostwood Blvd',

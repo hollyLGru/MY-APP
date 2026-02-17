@@ -1,7 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, useMemo } from 'react'
-import { listings } from '@/data/listings'
-import ImageContainer from '@/components/ImageContainer'
+import { useState } from 'react'
 
 export default function Test() {
   const [term, setTerm] = useState('World')
@@ -11,7 +9,6 @@ export default function Test() {
       <div className="text-5xl font-bold text-pink-500">
         Testing until I remember how to fricking use app router 💅
       </div>
-      <ImageContainer image={listings[0].images[0]} />
     </div>
   )
 }
