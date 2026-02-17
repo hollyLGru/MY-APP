@@ -1,10 +1,11 @@
 import ListingsMap from '@/components/Map/ListingsMap'
 import { listings } from '@/data/listings'
+import Header from '@/components/Header'
 
 export default function Home() {
   return (
     <div>
-      <h1>Heres all my fake housing data</h1>
+      <Header />
       <ListingsMap listings={listings} />
     </div>
   )
