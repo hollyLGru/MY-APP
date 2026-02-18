@@ -1,4 +1,4 @@
-export const listings = [
+const listings = [
   {
     id: '7447 Royal St',
     address: '7447 Royal St',
@@ -118,3 +118,5 @@ export const listings = [
     ],
   },
 ]
+
+export default listings

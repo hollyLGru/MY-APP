@@ -8,7 +8,7 @@ export default function Header() {
   return (
     <header className="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200">
       {/* Pastel rainbow accent bar */}
-      <div className="h-1 w-full bg-gradient-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
+      <div className="h-1 w-full bg-linear-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
 
       <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}

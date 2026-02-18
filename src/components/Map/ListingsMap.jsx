@@ -6,7 +6,8 @@ import { createRoot } from 'react-dom/client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import PopUp from '@/components/Map/Popup'
 
-export default function Map({ listings = [] } = {}) {
+export default function Map({ listings, generatedSummitCountyListings }) {
+  console.log('generatedSummitCountyListings', generatedSummitCountyListings)
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
 
