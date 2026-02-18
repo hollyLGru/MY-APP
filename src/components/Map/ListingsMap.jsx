@@ -8,6 +8,10 @@ import PopUp from '@/components/Map/Popup'
 
 export default function Map({ listings, generatedSummitCountyListings }) {
   console.log('generatedSummitCountyListings', generatedSummitCountyListings)
+  const allListings = [
+    ...(listings || []),
+    ...(generatedSummitCountyListings || []),
+  ]
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
 
@@ -256,7 +260,9 @@ export default function Map({ listings, generatedSummitCountyListings }) {
 
   // update source data when listings change
   useEffect(() => {
-    const fc = buildListingsGeoJSON(listings)
+    // const fc = buildListingsGeoJSON(listings)
+    const fc = buildListingsGeoJSON(allListings)
+
     pendingFcRef.current = fc
 
     const map = mapRef.current
