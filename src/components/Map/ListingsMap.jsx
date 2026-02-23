@@ -1,17 +1,18 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 import { createRoot } from 'react-dom/client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import PopUp from '@/components/Map/Popup'
 
 export default function Map({ listings, generatedSummitCountyListings }) {
-  console.log('generatedSummitCountyListings', generatedSummitCountyListings)
-  const allListings = [
-    ...(listings || []),
-    ...(generatedSummitCountyListings || []),
-  ]
+  const [isRailOpen, setIsRailOpen] = useState(true)
+  const [idsInView, setIdsInView] = useState([])
+  // const allListings = [
+  //   ...(listings || []),
+  //   ...(generatedSummitCountyListings || []),
+  // ]
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
 
@@ -19,14 +20,11 @@ export default function Map({ listings, generatedSummitCountyListings }) {
   const popupRef = useRef(null)
   const popupRootRef = useRef(null)
 
-  // IMPORTANT: avoid name collision with this component being named Map()
   const listingByIdRef = useRef(new globalThis.Map())
 
-  // state refs for hover/selection
   const hoveredIdRef = useRef(null)
   const selectedIdRef = useRef(null)
 
-  // if listings arrive before map/source exists
   const pendingFcRef = useRef({ type: 'FeatureCollection', features: [] })
 
   const SOURCE_ID = 'listings'
@@ -70,7 +68,6 @@ export default function Map({ listings, generatedSummitCountyListings }) {
     map.fitBounds(bounds, { padding: 60, maxZoom: 14 })
   }
 
-  // init map once
   useEffect(() => {
     if (!mapContainerRef.current) return
     if (mapRef.current) return
@@ -238,6 +235,11 @@ export default function Map({ listings, generatedSummitCountyListings }) {
         }
       })
 
+      // get listings in view
+      map.on('idle', updateListingsInView)
+      map.on('moveend', updateListingsInView)
+      updateListingsInView()
+
       // ensure we render whatever listings we already have
       const src = map.getSource(SOURCE_ID)
       if (src) src.setData(pendingFcRef.current)
@@ -248,20 +250,21 @@ export default function Map({ listings, generatedSummitCountyListings }) {
 
     return () => {
       try {
-        popupRootRef.current?.unmount?.()
+        popupRef.current?.remove()
       } catch {}
       popupRef.current?.remove()
 
       map.off('load', onLoad)
       map.remove()
       mapRef.current = null
+      map.off('idle', updateListingsInView)
+      map.off('moveend', updateListingsInView)
     }
   }, [])
 
-  // update source data when listings change
   useEffect(() => {
-    // const fc = buildListingsGeoJSON(listings)
-    const fc = buildListingsGeoJSON(allListings)
+    const fc = buildListingsGeoJSON(listings)
+    // const fc = buildListingsGeoJSON(allListings)
 
     pendingFcRef.current = fc
 
@@ -275,5 +278,119 @@ export default function Map({ listings, generatedSummitCountyListings }) {
     }
   }, [listings])
 
-  return <div ref={mapContainerRef} className="w-screen h-[80vh]" />
+  const updateListingsInView = () => {
+    const map = mapRef.current
+    if (!map) return
+
+    // Only grab features from the dot layer (or your source) in the viewport
+    const feats = map.queryRenderedFeatures({ layers: [DOT_LAYER] }) || []
+
+    const seen = new Set()
+    const ids = []
+    for (const f of feats) {
+      const id = String(f.properties?.listingId ?? f.id ?? '')
+      if (!id) continue
+      if (seen.has(id)) continue
+      seen.add(id)
+      ids.push(id)
+    }
+
+    setIdsInView(ids)
+  }
+
+  const listingsInView = useMemo(() => {
+    const byId = listingByIdRef.current
+    return idsInView.map((id) => byId.get(String(id))).filter(Boolean)
+  }, [idsInView])
+
+  const openListing = (listing) => {
+    const map = mapRef.current
+    if (!map) return
+
+    const id = String(listing.id ?? listing.listing_id ?? listing.slug ?? '')
+    if (!id) return
+
+    // highlight selection
+    selectedIdRef.current = id
+    if (map.getLayer(SELECTED_LAYER)) {
+      map.setFilter(SELECTED_LAYER, ['==', ['get', 'listingId'], id])
+    }
+
+    // fly to
+    if (Number.isFinite(listing.lon) && Number.isFinite(listing.lat)) {
+      map.flyTo({
+        center: [listing.lon, listing.lat],
+        zoom: Math.max(map.getZoom(), 13),
+      })
+    }
+
+    // open popup (reuse your shared popup infra)
+    popupRootRef.current.render(<PopUp listing={listing} />)
+    popupRef.current.setLngLat([listing.lon, listing.lat]).addTo(map)
+  }
+
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    // slight delay helps after CSS transition
+    const timeout = setTimeout(() => {
+      map.resize()
+    }, 200)
+
+    return () => clearTimeout(timeout)
+  }, [isRailOpen])
+
+  return (
+    <div className="w-screen h-[80vh] flex">
+      {/* Map */}
+      <div className="relative flex-1">
+        <div ref={mapContainerRef} className="w-full h-full" />
+        {!isRailOpen ? (
+          <button
+            onClick={() => setIsRailOpen((v) => !v)}
+            className="absolute top-4 right-4 z-10 rounded-md bg-white/90 px-3 py-2 text-sm shadow"
+          >
+            {'Show listings'}
+          </button>
+        ) : null}
+      </div>
+
+      {/* Rail */}
+      <aside
+        className={[
+          'h-full border-l bg-white transition-all duration-200',
+          isRailOpen ? 'w-[380px]' : 'w-0 overflow-hidden',
+        ].join(' ')}
+      >
+        <div className="h-full flex flex-col">
+          <div className="p-3 border-b flex items-center justify-between">
+            <div className="text-sm font-semibold">
+              {listingsInView.length} homes in view
+            </div>
+            <button
+              onClick={() => setIsRailOpen(false)}
+              className="text-sm px-2 py-1 rounded hover:bg-gray-100"
+            >
+              Close
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-auto p-3 space-y-3">
+            {/* // onClick={() => openListing(l)} */}
+            {listingsInView.map((l) => (
+              <button onClick={() => openListing(l)}>
+                <PopUp key={l.id ?? l.listing_id ?? l.slug} listing={l} />
+              </button>
+            ))}
+            {!listingsInView.length ? (
+              <div className="text-sm text-gray-500">
+                Pan/zoom the map to see listings in this area.
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </aside>
+    </div>
+  )
 }
