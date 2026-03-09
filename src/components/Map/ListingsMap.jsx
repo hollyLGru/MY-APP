@@ -343,47 +343,65 @@ export default function Map({ listings }) {
       {/* Map */}
       <div className="relative flex-1">
         <div ref={mapContainerRef} className="w-full h-full" />
-        {!isRailOpen ? (
+        {!isRailOpen && (
           <button
-            onClick={() => setIsRailOpen((v) => !v)}
+            type="button"
+            onClick={() => setIsRailOpen(true)}
             className="absolute top-4 right-4 z-10 rounded-md bg-white/90 px-3 py-2 text-sm shadow"
           >
-            {'Show listings'}
+            Show listings
           </button>
-        ) : null}
+        )}
       </div>
 
       {/* Rail */}
       <aside
         className={[
-          'h-full border-l bg-white transition-all duration-200',
-          isRailOpen ? 'w-95' : 'w-0 overflow-hidden',
+          'relative z-20 h-full shrink-0 border-l bg-white transition-all duration-200 overflow-hidden',
+          isRailOpen ? 'w-[380px]' : 'w-0 border-l-0',
         ].join(' ')}
       >
-        <div className="h-full flex flex-col">
-          <div className="p-3 border-b flex items-center justify-between">
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b p-3">
             <div className="text-sm font-semibold">
               {listingsInView.length} homes in view
             </div>
+
             <button
-              onClick={() => setIsRailOpen(false)}
-              className="text-sm px-2 py-1 rounded hover:bg-gray-100"
+              type="button"
+              onClick={() => {
+                console.log('close clicked')
+                setIsRailOpen(false)
+              }}
+              className="rounded px-2 py-1 text-sm hover:bg-gray-100"
             >
-              Close
+              Close Me
             </button>
           </div>
 
           <div className="flex-1 overflow-auto p-3 space-y-3">
             {listingsInView.map((l) => (
-              <button onClick={() => openListing(l)}>
-                <PopUp key={l.id ?? l.listing_id ?? l.slug} listing={l} />
-              </button>
+              <div
+                key={l.id ?? l.listing_id ?? l.slug}
+                onClick={() => openListing(l)}
+                className="block w-full cursor-pointer text-left"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    openListing(l)
+                  }
+                }}
+              >
+                <PopUp listing={l} />
+              </div>
             ))}
-            {!listingsInView.length ? (
+
+            {!listingsInView.length && (
               <div className="text-sm text-gray-500">
                 Pan/zoom the map to see listings in this area.
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </aside>

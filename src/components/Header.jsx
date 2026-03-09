@@ -7,16 +7,14 @@ export default function Header() {
 
   return (
     <header className="relative w-full h-130 text-white">
-      {/* Background image */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${headerImage.src})` }}
       />
 
-      <div className="absolute inset-0 bg-black/30" />
+      {/* <div className="absolute inset-0 bg-black/30" /> */}
       {/* Navigation */}
       <div className="relative z-10 flex items-center justify-between px-8 py-6">
-        {/* Logo */}
         <div className="text-2xl font-semibold tracking-tight">
           🐎 HorseApp Logo??
         </div>
