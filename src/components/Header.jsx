@@ -1,59 +1,56 @@
 'use client'
-
+import headerImage from '@/data/images/headerImage.jpg'
 import { useState } from 'react'
 
 export default function Header() {
   const [search, setSearch] = useState('')
 
   return (
-    <header className="w-full bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200">
-      {/* Pastel rainbow accent bar */}
-      <div className="h-1 w-full bg-linear-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
+    <header className="relative w-full h-130 text-white">
+      {/* Background image */}
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${headerImage.src})` }}
+      />
 
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div className="absolute inset-0 bg-black/30" />
+      {/* Navigation */}
+      <div className="relative z-10 flex items-center justify-between px-8 py-6">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="rounded-2xl px-4 py-1.5 text-lg font-bold text-gray-900 shadow-sm bg-gradient-to-br from-pink-200 via-emerald-200 to-sky-200">
-            🏡
-          </div>
-          <span className="text-2xl font-semibold tracking-tight text-gray-900">
-            Nestly
-          </span>
+        <div className="text-2xl font-semibold tracking-tight">
+          🐎 HorseApp Logo??
         </div>
 
+        {/* Nav links */}
+        <div className="flex items-center gap-8 text-sm font-medium">
+          <button className="hover:opacity-80">Explore</button>
+          <button className="hover:opacity-80">Saved</button>
+          <button className="hover:opacity-80">Log in</button>
+        </div>
+      </div>
+
+      {/* Hero content */}
+      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
+        <h1 className="text-5xl md:text-6xl font-semibold mb-8">
+          Find your ride
+        </h1>
+
         {/* Search */}
-        <div className="hidden md:flex flex-1 max-w-xl mx-8">
-          <div className="w-full rounded-full p-[1px] bg-gradient-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200">
+        <div className="w-full max-w-2xl">
+          <div className="rounded-full bg-white shadow-2xl ring-1 ring-black/10">
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by city, address, or ZIP"
-              className="w-full rounded-full bg-white px-5 py-2 focus:outline-none focus:ring-2 focus:ring-pink-200 transition"
+              placeholder="Search by city, zip, or key words"
+              className="w-full rounded-full bg-white px-6 py-4 text-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-white/40"
             />
           </div>
         </div>
 
-        {/* Nav */}
-        <div className="flex items-center gap-6">
-          <button className="font-medium text-pink-300 hover:text-pink-400 hover:font-semibold transition-all duration-200">
-            Buy
-          </button>
-
-          <button className="font-medium text-amber-300 hover:text-amber-400 hover:font-semibold transition-all duration-200">
-            Rent
-          </button>
-
-          <button className="font-medium text-emerald-300 hover:text-emerald-400 hover:font-semibold transition-all duration-200">
-            Sell
-          </button>
-
-          <button className=" rounded-full p-[1px] bg-gradient-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200 shadow-sm">
-            <span className="block rounded-full bg-white px-5 py-2 text-gray-900 font-medium hover:bg-gray-50 transition">
-              Sign In
-            </span>
-          </button>
-        </div>
+        <button className="mt-6 text-sm underline opacity-90 hover:opacity-100">
+          Explore nearby
+        </button>
       </div>
     </header>
   )

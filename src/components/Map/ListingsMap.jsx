@@ -6,13 +6,10 @@ import { createRoot } from 'react-dom/client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import PopUp from '@/components/Map/Popup'
 
-export default function Map({ listings, generatedSummitCountyListings }) {
+export default function Map({ listings }) {
   const [isRailOpen, setIsRailOpen] = useState(true)
   const [idsInView, setIdsInView] = useState([])
-  // const allListings = [
-  //   ...(listings || []),
-  //   ...(generatedSummitCountyListings || []),
-  // ]
+
   const mapContainerRef = useRef(null)
   const mapRef = useRef(null)
 
@@ -360,7 +357,7 @@ export default function Map({ listings, generatedSummitCountyListings }) {
       <aside
         className={[
           'h-full border-l bg-white transition-all duration-200',
-          isRailOpen ? 'w-[380px]' : 'w-0 overflow-hidden',
+          isRailOpen ? 'w-95' : 'w-0 overflow-hidden',
         ].join(' ')}
       >
         <div className="h-full flex flex-col">
@@ -377,7 +374,6 @@ export default function Map({ listings, generatedSummitCountyListings }) {
           </div>
 
           <div className="flex-1 overflow-auto p-3 space-y-3">
-            {/* // onClick={() => openListing(l)} */}
             {listingsInView.map((l) => (
               <button onClick={() => openListing(l)}>
                 <PopUp key={l.id ?? l.listing_id ?? l.slug} listing={l} />
