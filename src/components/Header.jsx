@@ -14,7 +14,6 @@ export default function Header() {
       />
 
       <div className="absolute inset-0 bg-black/30" />
-      {/* Navigation */}
       <div className="relative z-10 flex items-center justify-between px-8 py-6">
         <div className="rounded-full bg-orange-200 flex items-center justify-center">
           <img className="w-20 h-auto" src={logo.src} alt="Find My Ride Logo" />
@@ -26,7 +25,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
         <h1 className="flex items-center gap-4 text-5xl md:text-6xl font-semibold mb-8">
           Find your ride
@@ -39,7 +37,7 @@ export default function Header() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by city, zip, or key words"
+              placeholder="Search by city, state or zip"
               className="w-full rounded-full bg-white px-6 py-4 text-lg text-gray-900 placeholder:text-gray-500 focus:outline-none focus:ring-4 focus:ring-white/40"
             />
           </div>

@@ -1,8 +1,12 @@
+import Header from '@/components/Header'
+import ListingsGrid from '@/components/ListingsGrid'
+import listings from '@/data/listings'
+
 export default async function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      {/* <Test /> */}
-      find my ride
+    <div>
+      <Header />
+      <ListingsGrid listings={listings} />
     </div>
   )
 }
