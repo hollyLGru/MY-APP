@@ -35,7 +35,7 @@ const listings = [
     age: '4',
     name: 'Lord Farquuad aka Farkkie',
     sex: 'John',
-    discipline: 'pack mule',
+    discipline: 'packing',
     rider_type: 'anyone',
     travel: 'Yes',
     price: '100 per day',
