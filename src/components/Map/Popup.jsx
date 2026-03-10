@@ -1,16 +1,16 @@
 'use client'
 import ImageContainer from '@/components/ImageContainer'
 export default function PopUp(listing) {
-  const house = listing.listing
+  const horse = listing.listing
   return (
     <div>
-      <ImageContainer house={house} />
-      <h1>${house.price}</h1>
+      <ImageContainer horse={horse} />
+      <h1>{horse.name}</h1>
       <h2>
-        {house.beds} beds | {house.baths} baths | {house.sqft} sqft home
+        {horse.breed} beds | {horse.height} baths | {horse.age}
       </h2>
       <h2>
-        {house.address}, {house.city}, {house.state}, {house.zip}
+        {horse.address}, {horse.city}, {horse.state}, {horse.zip}
       </h2>
     </div>
   )

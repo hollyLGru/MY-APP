@@ -24,8 +24,8 @@ function extractTrailingNumber(name) {
   return m ? Number(m[1]) : 0
 }
 
-export function getHouseImagesByAddress(address) {
-  const addr = normalizeName(address)
+export function getHorseImagesById(id) {
+  const addr = normalizeName(id)
   if (!addr) return []
 
   const matches = ALL_IMAGES.map(({ filename, src }) => {

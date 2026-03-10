@@ -1,13 +1,13 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { getHouseImagesByAddress } from '@/data/getHouseImages'
+import { getHorseImagesById } from '@/data/getHorseImagesById'
 
-export default function ImageContainer({ house }) {
+export default function ImageContainer({ horse }) {
   const images = useMemo(() => {
-    const imgs = getHouseImagesByAddress(house?.address) || []
+    const imgs = getHorseImagesById(horse.id) || []
     return imgs.map((img) => img?.src ?? img).filter(Boolean)
-  }, [house?.address])
+  }, [horse?.id])
 
   const [idx, setIdx] = useState(0)
 
@@ -30,9 +30,7 @@ export default function ImageContainer({ house }) {
 
   if (!images.length) {
     return (
-      <div className="text-sm opacity-70">
-        No images found for: {house?.address}
-      </div>
+      <div className="text-sm opacity-70">No images found for: {horse.id}</div>
     )
   }
 
@@ -41,7 +39,7 @@ export default function ImageContainer({ house }) {
       <img
         className="w-full h-auto block select-none"
         src={images[safeIdx]}
-        alt={house?.address || 'house'}
+        alt={horse?.name || 'horse'}
         draggable={false}
       />
 
