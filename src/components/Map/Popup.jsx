@@ -16,8 +16,6 @@ export default function PopUp({ listing }) {
 
       <div className="p-3 space-y-2">
         <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          {horse.name}
-
           {sexSymbol && (
             <span
               className={`text-lg font-bold ${
@@ -27,9 +25,10 @@ export default function PopUp({ listing }) {
               {sexSymbol}
             </span>
           )}
+          {horse.name}
+          <p className="text-sm text-gray-600">{horse.breed}</p>
         </h2>
 
-        <p className="text-sm text-gray-600">{horse.breed}</p>
         <div className="flex flex-wrap gap-2 text-sm">
           <span className="bg-indigo-50 text-indigo-700 px-2 py-[2px] rounded-md">
             {horse.height} hh
