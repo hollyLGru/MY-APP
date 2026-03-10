@@ -35,9 +35,9 @@ export default function ImageContainer({ horse }) {
   }
 
   return (
-    <div className="relative w-full overflow-hidden rounded">
+    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-t-2xl">
       <img
-        className="w-full h-auto block select-none"
+        className="block h-full w-full select-none object-cover"
         src={images[safeIdx]}
         alt={horse?.name || 'horse'}
         draggable={false}
@@ -47,8 +47,11 @@ export default function ImageContainer({ horse }) {
         <>
           <button
             type="button"
-            onClick={prev}
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 text-white w-9 h-9 flex items-center justify-center"
+            onClick={(e) => {
+              e.stopPropagation()
+              prev()
+            }}
+            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
             aria-label="Previous image"
           >
             ‹
@@ -56,14 +59,17 @@ export default function ImageContainer({ horse }) {
 
           <button
             type="button"
-            onClick={next}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/50 text-white w-9 h-9 flex items-center justify-center"
+            onClick={(e) => {
+              e.stopPropagation()
+              next()
+            }}
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
             aria-label="Next image"
           >
             ›
           </button>
 
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/50 text-white text-xs px-2 py-1">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/50 px-2 py-1 text-xs text-white">
             {safeIdx + 1} / {images.length}
           </div>
         </>

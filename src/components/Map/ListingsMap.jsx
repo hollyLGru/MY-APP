@@ -8,7 +8,6 @@ import PopUp from '@/components/Map/Popup'
 import Rail from '@/components/Map/Rail'
 
 export default function Map({ listings }) {
-  console.log(listings)
   const [isRailOpen, setIsRailOpen] = useState(true)
   const [idsInView, setIdsInView] = useState([])
 
