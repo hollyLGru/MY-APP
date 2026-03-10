@@ -16,7 +16,7 @@ export default function Header() {
       {/* Navigation */}
       <div className="relative z-10 flex items-center justify-between px-8 py-6">
         <div className="text-2xl font-semibold tracking-tight">
-          🐎 HorseApp Logo??
+          🐎 HorseApp Logo???
         </div>
 
         {/* Nav links */}
