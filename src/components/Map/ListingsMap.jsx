@@ -357,58 +357,62 @@ export default function Map({ listings }) {
       {/* Rail */}
       <aside
         className={[
-          'relative z-20 h-full shrink-0 bg-white transition-all duration-300 overflow-hidden shadow-xl',
-          isRailOpen ? 'w-[460px]' : 'w-0',
+          'relative z-20 h-full shrink-0 overflow-hidden border-l border-pink-100 bg-[#fcfcfd] transition-all duration-300',
+          isRailOpen ? 'w-[520px]' : 'w-0 border-l-0',
         ].join(' ')}
       >
         <div className="flex h-full flex-col">
-          {/* Rainbow accent bar */}
-          <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-pink-50 via-amber-50 via-emerald-50 to-sky-50 border-b">
-            <div className="flex flex-col">
-              <span className="text-xs uppercase tracking-widest text-gray-500">
-                Explore
-              </span>
+          <div className="sticky top-0 z-10 border-b border-pink-100 bg-white/90 backdrop-blur">
+            <div className="h-1 w-full bg-gradient-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
 
-              <span className="text-lg font-[var(--font-fraunces)] text-gray-900">
-                {listingsInView.length} rides nearby
-              </span>
+            <div className="flex items-center justify-between px-5 py-4">
+              <div>
+                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400">
+                  Find your ride
+                </p>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {listingsInView.length} horses in view
+                </h2>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsRailOpen(false)}
+                className="rounded-full border border-pink-100 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition hover:bg-pink-50"
+              >
+                Close
+              </button>
             </div>
-
-            <button
-              type="button"
-              onClick={() => setIsRailOpen(false)}
-              className="rounded-full bg-white px-3 py-1 text-sm shadow hover:bg-gray-100 transition"
-            >
-              ✕
-            </button>
           </div>
 
-          {/* Listings */}
-          <div className="flex-1 overflow-auto p-4 space-y-4 bg-gray-50">
-            {listingsInView.map((l) => (
-              <div
-                key={l.id ?? l.listing_id ?? l.slug}
-                onClick={() => openListing(l)}
-                className="cursor-pointer"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    openListing(l)
-                  }
-                }}
-              >
-                <div className="rounded-xl bg-white shadow-sm hover:shadow-md transition p-2">
+          <div className="flex-1 overflow-auto px-4 py-4">
+            <div className="space-y-4">
+              {listingsInView.map((l) => (
+                <div
+                  key={l.id ?? l.listing_id ?? l.slug}
+                  onClick={() => openListing(l)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') openListing(l)
+                  }}
+                  className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                >
                   <PopUp listing={l} />
                 </div>
-              </div>
-            ))}
+              ))}
 
-            {!listingsInView.length && (
-              <div className="text-sm text-gray-500 text-center py-12">
-                Pan or zoom the map to see listings in this area.
-              </div>
-            )}
+              {!listingsInView.length && (
+                <div className="rounded-2xl border border-dashed border-pink-200 bg-white px-6 py-12 text-center">
+                  <p className="text-base font-semibold text-gray-700">
+                    No horses in this view yet
+                  </p>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Pan or zoom the map to discover more rides nearby.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </aside>
