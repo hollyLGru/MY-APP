@@ -5,6 +5,7 @@ import mapboxgl from 'mapbox-gl'
 import { createRoot } from 'react-dom/client'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import PopUp from '@/components/Map/Popup'
+import Rail from '@/components/Map/Rail'
 
 export default function Map({ listings }) {
   const [isRailOpen, setIsRailOpen] = useState(true)
@@ -28,7 +29,6 @@ export default function Map({ listings }) {
   const DOT_LAYER = 'listings-dot'
   const HOVER_LAYER = 'listings-hover'
   const SELECTED_LAYER = 'listings-selected'
-  const PRICE_LAYER = 'listings-price'
 
   const buildListingsGeoJSON = (arr) => {
     const byId = new globalThis.Map()
@@ -42,7 +42,7 @@ export default function Map({ listings }) {
 
         return {
           type: 'Feature',
-          id: String(listingId), // ✅ required for feature-state hover
+          id: String(listingId),
           geometry: {
             type: 'Point',
             coordinates: [l.lon, l.lat],
@@ -80,7 +80,6 @@ export default function Map({ listings }) {
 
     mapRef.current = map
 
-    // shared popup mount point
     const popupEl = document.createElement('div')
     popupRootRef.current = createRoot(popupEl)
     popupRef.current = new mapboxgl.Popup({
@@ -91,7 +90,6 @@ export default function Map({ listings }) {
     }).setDOMContent(popupEl)
 
     const onLoad = () => {
-      // source
       if (!map.getSource(SOURCE_ID)) {
         map.addSource(SOURCE_ID, {
           type: 'geojson',
@@ -156,7 +154,6 @@ export default function Map({ listings }) {
         const f = e.features && e.features[0]
         if (!f) return
 
-        // clear previous hover
         if (hoveredIdRef.current !== null) {
           map.setFeatureState(
             { source: SOURCE_ID, id: hoveredIdRef.current },
@@ -182,7 +179,6 @@ export default function Map({ listings }) {
         hoveredIdRef.current = null
       })
 
-      // click behavior: select + zoom + popup
       map.on('click', DOT_LAYER, (e) => {
         const feature = e.features && e.features[0]
         if (!feature) return
@@ -191,7 +187,6 @@ export default function Map({ listings }) {
         const listing = listingByIdRef.current.get(String(id))
         if (!listing) return
 
-        // highlight selection
         selectedIdRef.current = String(id)
         map.setFilter(SELECTED_LAYER, [
           '==',
@@ -199,12 +194,10 @@ export default function Map({ listings }) {
           selectedIdRef.current,
         ])
 
-        // popup
         popupRootRef.current.render(<PopUp listing={listing} />)
         popupRef.current.setLngLat(e.lngLat).addTo(map)
       })
 
-      // clear selection when popup closes
       popupRef.current.on('close', () => {
         selectedIdRef.current = null
         if (map.getLayer(SELECTED_LAYER)) {
@@ -217,7 +210,6 @@ export default function Map({ listings }) {
       map.on('moveend', updateListingsInView)
       updateListingsInView()
 
-      // ensure we render whatever listings we already have
       const src = map.getSource(SOURCE_ID)
       if (src) src.setData(pendingFcRef.current)
       fitToFeatures(map, pendingFcRef.current)
@@ -241,7 +233,6 @@ export default function Map({ listings }) {
 
   useEffect(() => {
     const fc = buildListingsGeoJSON(listings)
-    // const fc = buildListingsGeoJSON(allListings)
 
     pendingFcRef.current = fc
 
@@ -259,7 +250,6 @@ export default function Map({ listings }) {
     const map = mapRef.current
     if (!map) return
 
-    // Only grab features from the dot layer (or your source) in the viewport
     const feats = map.queryRenderedFeatures({ layers: [DOT_LAYER] }) || []
 
     const seen = new Set()
@@ -287,13 +277,11 @@ export default function Map({ listings }) {
     const id = String(listing.id ?? listing.listing_id ?? listing.slug ?? '')
     if (!id) return
 
-    // highlight selection
     selectedIdRef.current = id
     if (map.getLayer(SELECTED_LAYER)) {
       map.setFilter(SELECTED_LAYER, ['==', ['get', 'listingId'], id])
     }
 
-    // fly to
     if (Number.isFinite(listing.lon) && Number.isFinite(listing.lat)) {
       map.flyTo({
         center: [listing.lon, listing.lat],
@@ -301,7 +289,6 @@ export default function Map({ listings }) {
       })
     }
 
-    // open popup (reuse your shared popup infra)
     popupRootRef.current.render(<PopUp listing={listing} />)
     popupRef.current.setLngLat([listing.lon, listing.lat]).addTo(map)
   }
@@ -310,7 +297,6 @@ export default function Map({ listings }) {
     const map = mapRef.current
     if (!map) return
 
-    // slight delay helps after CSS transition
     const timeout = setTimeout(() => {
       map.resize()
     }, 200)
@@ -320,7 +306,6 @@ export default function Map({ listings }) {
 
   return (
     <div className="w-screen h-[80vh] flex">
-      {/* Map */}
       <div className="relative flex-1">
         <div ref={mapContainerRef} className="w-full h-full" />
         {!isRailOpen && (
@@ -333,69 +318,12 @@ export default function Map({ listings }) {
           </button>
         )}
       </div>
-
-      {/* Rail */}
-      <aside
-        className={[
-          'relative z-20 h-full shrink-0 overflow-hidden border-l border-pink-100 bg-[#fcfcfd] transition-all duration-300',
-          isRailOpen ? 'w-[520px]' : 'w-0 border-l-0',
-        ].join(' ')}
-      >
-        <div className="flex h-full flex-col">
-          <div className="sticky top-0 z-10 border-b border-pink-100 bg-white/90 backdrop-blur">
-            <div className="h-1 w-full bg-gradient-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
-
-            <div className="flex items-center justify-between px-5 py-4">
-              <div>
-                <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400">
-                  Find your ride
-                </p>
-                <h2 className="text-xl font-semibold text-gray-900">
-                  {listingsInView.length} horses in view
-                </h2>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsRailOpen(false)}
-                className="rounded-full border border-pink-100 bg-white px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm transition hover:bg-pink-50"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-auto px-4 py-4">
-            <div className="space-y-4">
-              {listingsInView.map((l) => (
-                <div
-                  key={l.id ?? l.listing_id ?? l.slug}
-                  onClick={() => openListing(l)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') openListing(l)
-                  }}
-                  className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <PopUp listing={l} />
-                </div>
-              ))}
-
-              {!listingsInView.length && (
-                <div className="rounded-2xl border border-dashed border-pink-200 bg-white px-6 py-12 text-center">
-                  <p className="text-base font-semibold text-gray-700">
-                    No horses in this view yet
-                  </p>
-                  <p className="mt-1 text-sm text-gray-500">
-                    Pan or zoom the map to discover more rides nearby.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </aside>
+      <Rail
+        listingsInView={listingsInView}
+        openListing={openListing}
+        setIsRailOpen={setIsRailOpen}
+        isRailOpen={isRailOpen}
+      />
     </div>
   )
 }

@@ -3,37 +3,36 @@
 import { useEffect, useMemo, useState } from 'react'
 import PopUp from '@/components/Map/Popup'
 
-const toRadians = (value) => {
-  return (value * Math.PI) / 180
-}
-
-const getDistanceInMiles = (lat1, lng1, lat2, lng2) => {
-  console.log('distance inputs', lat1, lng1, lat2, lng2)
-  lat1 = Number(lat1)
-  lng1 = Number(lng1)
-  lat2 = Number(lat2)
-  lng2 = Number(lng2)
-
-  const earthRadiusMiles = 3958.8
-
-  const dLat = toRadians(lat2 - lat1)
-  const dLng = toRadians(lng2 - lng1)
-
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRadians(lat1)) *
-      Math.cos(toRadians(lat2)) *
-      Math.sin(dLng / 2) *
-      Math.sin(dLng / 2)
-
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  const distance = earthRadiusMiles * c
-
-  return distance.toString().split('.')[0]
-}
-
 export default function ListingsGrid({ listings }) {
   const [location, setLocation] = useState(null)
+
+  const getDistanceInMiles = (lat1, lng1, lat2, lng2) => {
+    lat1 = Number(lat1)
+    lng1 = Number(lng1)
+    lat2 = Number(lat2)
+    lng2 = Number(lng2)
+
+    const earthRadiusMiles = 3958.8
+
+    const toRadians = (value) => {
+      return (value * Math.PI) / 180
+    }
+
+    const dLat = toRadians(lat2 - lat1)
+    const dLng = toRadians(lng2 - lng1)
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2)
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    const distance = earthRadiusMiles * c
+
+    return distance.toString().split('.')[0]
+  }
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((pos) => {

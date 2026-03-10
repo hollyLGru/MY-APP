@@ -1,5 +1,3 @@
-// src/data/getHouseImages.js
-
 // Loads every image in ./images at build time
 const ctx = require.context('./images', false, /\.(png|jpe?g|webp|gif)$/i)
 
