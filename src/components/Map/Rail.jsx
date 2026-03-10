@@ -11,10 +11,6 @@ export default function Rail({ listingsInView, openListing, setIsRailOpen }) {
     >
       <div className="flex h-full flex-col">
         <div className="sticky top-0 z-10 border-b border-pink-100 bg-white/95 backdrop-blur rounded-t-3xl md:rounded-none">
-          <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-gray-300 md:hidden" />
-
-          <div className="h-1 w-full bg-linear-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
-
           <div className="flex items-center justify-between px-4 py-4 md:px-5">
             <div>
               <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400">
