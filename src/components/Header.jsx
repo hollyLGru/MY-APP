@@ -1,6 +1,7 @@
 'use client'
 import headerImage from '@/data/images/headerImage.jpg'
 import { useState } from 'react'
+import logo from '@/data/images/logo.png'
 
 export default function Header() {
   const [search, setSearch] = useState('')
@@ -15,11 +16,9 @@ export default function Header() {
       <div className="absolute inset-0 bg-black/30" />
       {/* Navigation */}
       <div className="relative z-10 flex items-center justify-between px-8 py-6">
-        <div className="text-2xl font-semibold tracking-tight">
-          🐎 HorseApp Logo??
+        <div className="rounded-full bg-orange-200 flex items-center justify-center">
+          <img className="w-20 h-auto" src={logo.src} alt="Find My Ride Logo" />
         </div>
-
-        {/* Nav links */}
         <div className="flex items-center gap-8 text-sm font-medium">
           <button className="hover:opacity-80">Explore</button>
           <button className="hover:opacity-80">Saved</button>
@@ -29,7 +28,7 @@ export default function Header() {
 
       {/* Hero content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6">
-        <h1 className="text-5xl md:text-6xl font-semibold mb-8">
+        <h1 className="flex items-center gap-4 text-5xl md:text-6xl font-semibold mb-8">
           Find your ride
         </h1>
 
