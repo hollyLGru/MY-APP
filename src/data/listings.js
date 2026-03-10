@@ -32,7 +32,7 @@ const listings = [
     lon: -111.27738420384797,
     breed: 'Shetland Mule',
     height: '43”',
-    age: '4 years old',
+    age: '4',
     name: 'Lord Farquuad aka Farkkie',
     sex: 'John',
     discipline: 'pack mule',
