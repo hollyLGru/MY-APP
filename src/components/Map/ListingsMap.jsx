@@ -357,34 +357,39 @@ export default function Map({ listings }) {
       {/* Rail */}
       <aside
         className={[
-          'relative z-20 h-full shrink-0 border-l bg-white transition-all duration-200 overflow-hidden',
-          isRailOpen ? 'w-[380px]' : 'w-0 border-l-0',
+          'relative z-20 h-full shrink-0 bg-white transition-all duration-300 overflow-hidden shadow-xl',
+          isRailOpen ? 'w-[460px]' : 'w-0',
         ].join(' ')}
       >
         <div className="flex h-full flex-col">
-          <div className="flex items-center justify-between border-b p-3">
-            <div className="text-sm font-semibold">
-              {listingsInView.length} homes in view
+          {/* Rainbow accent bar */}
+          <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-pink-50 via-amber-50 via-emerald-50 to-sky-50 border-b">
+            <div className="flex flex-col">
+              <span className="text-xs uppercase tracking-widest text-gray-500">
+                Explore
+              </span>
+
+              <span className="text-lg font-[var(--font-fraunces)] text-gray-900">
+                {listingsInView.length} rides nearby
+              </span>
             </div>
 
             <button
               type="button"
-              onClick={() => {
-                console.log('close clicked')
-                setIsRailOpen(false)
-              }}
-              className="rounded px-2 py-1 text-sm hover:bg-gray-100"
+              onClick={() => setIsRailOpen(false)}
+              className="rounded-full bg-white px-3 py-1 text-sm shadow hover:bg-gray-100 transition"
             >
-              Close Me
+              ✕
             </button>
           </div>
 
-          <div className="flex-1 overflow-auto p-3 space-y-3">
+          {/* Listings */}
+          <div className="flex-1 overflow-auto p-4 space-y-4 bg-gray-50">
             {listingsInView.map((l) => (
               <div
                 key={l.id ?? l.listing_id ?? l.slug}
                 onClick={() => openListing(l)}
-                className="block w-full cursor-pointer text-left"
+                className="cursor-pointer"
                 role="button"
                 tabIndex={0}
                 onKeyDown={(e) => {
@@ -393,13 +398,15 @@ export default function Map({ listings }) {
                   }
                 }}
               >
-                <PopUp listing={l} />
+                <div className="rounded-xl bg-white shadow-sm hover:shadow-md transition p-2">
+                  <PopUp listing={l} />
+                </div>
               </div>
             ))}
 
             {!listingsInView.length && (
-              <div className="text-sm text-gray-500">
-                Pan/zoom the map to see listings in this area.
+              <div className="text-sm text-gray-500 text-center py-12">
+                Pan or zoom the map to see listings in this area.
               </div>
             )}
           </div>
