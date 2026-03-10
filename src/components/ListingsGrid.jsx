@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import PopUp from '@/components/Map/Popup'
+import logo from '@/data/images/logo.png'
 
 export default function ListingsGrid({ listings }) {
   const [location, setLocation] = useState(null)
