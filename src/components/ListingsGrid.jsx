@@ -32,7 +32,7 @@ const getDistanceInMiles = (lat1, lng1, lat2, lng2) => {
   return distance.toString().split('.')[0]
 }
 
-export default function ListingsGrid({ listings = [] }) {
+export default function ListingsGrid({ listings }) {
   const [location, setLocation] = useState(null)
 
   useEffect(() => {
