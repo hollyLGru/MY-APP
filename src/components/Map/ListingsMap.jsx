@@ -305,7 +305,7 @@ export default function Map({ listings }) {
   }, [isRailOpen])
 
   return (
-    <div className="w-screen h-[80vh] flex">
+    <div className="w-screen h-screen flex mb-20">
       <div className="relative flex-1">
         <div ref={mapContainerRef} className="w-full h-full" />
         {!isRailOpen && (
@@ -323,7 +323,6 @@ export default function Map({ listings }) {
           listingsInView={listingsInView}
           openListing={openListing}
           setIsRailOpen={setIsRailOpen}
-          isRailOpen={isRailOpen}
         />
       )}
     </div>

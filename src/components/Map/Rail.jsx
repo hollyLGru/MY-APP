@@ -1,28 +1,26 @@
 'use client'
 import PopUp from '@/components/Map/Popup'
 
-export default function Rail({
-  listingsInView,
-  openListing,
-  setIsRailOpen,
-  isRailOpen,
-}) {
+export default function Rail({ listingsInView, openListing, setIsRailOpen }) {
   return (
     <aside
-      className={[
-        'relative z-20 h-full shrink-0 border-l border-pink-100 bg-[#fcfcfd] transition-all duration-300 w-[520px]',
-      ].join(' ')}
+      className="
+        fixed inset-x-0 bottom-0 z-30 h-[42vh] rounded-t-3xl border-t border-pink-100 bg-[#fcfcfd] shadow-2xl
+        md:relative md:bottom-auto md:left-auto md:right-auto md:inset-x-auto md:z-20 md:h-full md:w-[520px] md:shrink-0 md:rounded-none md:rounded-l-3xl md:border-t-0 md:border-l
+      "
     >
       <div className="flex h-full flex-col">
-        <div className="sticky top-0 z-10 border-b border-pink-100 bg-white/90 backdrop-blur">
+        <div className="sticky top-0 z-10 border-b border-pink-100 bg-white/95 backdrop-blur rounded-t-3xl md:rounded-none">
+          <div className="mx-auto mt-2 h-1.5 w-12 rounded-full bg-gray-300 md:hidden" />
+
           <div className="h-1 w-full bg-linear-to-r from-pink-200 via-amber-200 via-emerald-200 via-sky-200 to-violet-200" />
 
-          <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex items-center justify-between px-4 py-4 md:px-5">
             <div>
               <p className="text-[11px] uppercase tracking-[0.2em] text-gray-400">
                 Find your ride
               </p>
-              <h2 className="text-xl font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold text-gray-900 md:text-xl">
                 {listingsInView.length} horses in view
               </h2>
             </div>
@@ -37,12 +35,15 @@ export default function Rail({
           </div>
         </div>
 
-        <div className="flex-1 overflow-auto px-4 py-4">
-          <div className="space-y-4">
+        <div className="flex-1 overflow-auto px-3 py-3 md:px-4 md:py-4">
+          <div className="space-y-3 md:space-y-4">
             {listingsInView.map((l) => (
               <div
                 key={l.id}
                 onClick={() => openListing(l)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') openListing(l)
+                }}
                 role="button"
                 tabIndex={0}
                 className="group cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
