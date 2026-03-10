@@ -21,7 +21,6 @@ const listings = [
     contact_method: 'phone',
     details: `Winnie is a BLM mustang living in Oakley Utah. She is used primarily for trail riding. 
 Although she is gentle and confident, her more '"go" than 'whoa' personality makes her best suited for a confident rider. Winnie is available for both guided trails or daily rentals within Summit county.`,
-    // tags:[‘trail horse’,’off-site’,‘intermediate’,’guided trails’,’mountain experienced’],
   },
   {
     id: 'JoJo',
@@ -45,7 +44,6 @@ Although she is gentle and confident, her more '"go" than 'whoa' personality mak
     contact_method: 'phone',
     details:
       'JoJo is a BLM Mustang from the 2020 Mustang Makeover Challenge. He is primarily a trail horse for confident advanced riders only. He has had arena exposure, exposure to cattle, and extensive trail experience. JoJo has no buck, bite, or kick. However, he is a spooky and watchy horse, and so requires a confident rider to enjoy him to his fullest. JoJo is available for guided trails and off-site rentals within Utah.',
-    // tags:[‘trail horse’,’off-site’,‘advanced’,’guided trails’,’arena’,’cattle’],
   },
   {
     id: 'Prince',
@@ -69,7 +67,6 @@ Although she is gentle and confident, her more '"go" than 'whoa' personality mak
     contact_method: 'phone',
     details:
       'Prince is a charming Halflinger ready for his next adventure. He is primarily a trail horse for confident intermediate riders. He has extensive mountain trail experience. He will ride western or english. Prince is available for guided trails and off-site rentals within Summit county.',
-    // tags:[‘trail horse’,’off-site’,‘intermediate’,’guided trails’,’mountain experienced’,’western’,’english’],
   },
 ]
 
