@@ -2,6 +2,7 @@
 import headerImage from '@/data/images/headerImage.jpg'
 import { useState } from 'react'
 import logo from '@/data/images/logo.png'
+import Link from 'next/link'
 
 export default function Header() {
   const [search, setSearch] = useState('')
@@ -19,8 +20,12 @@ export default function Header() {
           <img className="w-20 h-auto" src={logo.src} alt="Find My Ride Logo" />
         </div>
         <div className="flex items-center gap-8 text-sm font-medium">
-          <button className="hover:opacity-80">Explore</button>
-          <button className="hover:opacity-80">Saved</button>
+          <Link className="hover:opacity-80" href={'/map'}>
+            Explore
+          </Link>
+          <Link className="hover:opacity-80" href={'/'}>
+            Home
+          </Link>
           <button className="hover:opacity-80">Log in</button>
         </div>
       </div>
