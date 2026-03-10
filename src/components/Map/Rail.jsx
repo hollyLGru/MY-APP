@@ -10,8 +10,7 @@ export default function Rail({
   return (
     <aside
       className={[
-        'relative z-20 h-full shrink-0 overflow-hidden border-l border-pink-100 bg-[#fcfcfd] transition-all duration-300',
-        isRailOpen ? 'w-[520px]' : 'w-0 border-l-0',
+        'relative z-20 h-full shrink-0 border-l border-pink-100 bg-[#fcfcfd] transition-all duration-300 w-[520px]',
       ].join(' ')}
     >
       <div className="flex h-full flex-col">

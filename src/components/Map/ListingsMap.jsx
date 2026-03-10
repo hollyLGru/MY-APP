@@ -318,12 +318,14 @@ export default function Map({ listings }) {
           </button>
         )}
       </div>
-      <Rail
-        listingsInView={listingsInView}
-        openListing={openListing}
-        setIsRailOpen={setIsRailOpen}
-        isRailOpen={isRailOpen}
-      />
+      {isRailOpen && (
+        <Rail
+          listingsInView={listingsInView}
+          openListing={openListing}
+          setIsRailOpen={setIsRailOpen}
+          isRailOpen={isRailOpen}
+        />
+      )}
     </div>
   )
 }
