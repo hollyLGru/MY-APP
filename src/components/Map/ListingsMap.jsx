@@ -149,26 +149,6 @@ export default function Map({ listings }) {
         })
       }
 
-      // optional: price label
-      if (!map.getLayer(PRICE_LAYER)) {
-        map.addLayer({
-          id: PRICE_LAYER,
-          type: 'symbol',
-          source: SOURCE_ID,
-          layout: {
-            'text-field': ['get', 'priceLabel'],
-            'text-size': 12,
-            'text-allow-overlap': true,
-            'text-offset': [0, -1.25],
-          },
-          paint: {
-            'text-color': '#111827',
-            'text-halo-color': '#ffffff',
-            'text-halo-width': 1,
-          },
-        })
-      }
-
       // hover behavior
       map.on('mousemove', DOT_LAYER, (e) => {
         map.getCanvas().style.cursor = 'pointer'
